@@ -29,6 +29,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.title = 'Aplicación de ventas'
 app.version = '1.0.1'
+
 base.metadata.create_all(bind=motor)
 
 # ventas_lista = [
@@ -173,7 +174,7 @@ def actualiza_venta(id: int, venta: Ventas) -> dict:
     return JSONResponse(content={'mensaje': f'La venta {id} se ha actualizado', 'actualización': venta.model_dump()}, status_code=200)
 
 @app.delete('/ventas/{id}', tags=['Ventas'], response_model=dict, status_code=200)
-def borra_ventas(id: int= Path(ge=1, le=1000)) -> dict:
+def borra_ventas(id: int = Path(ge=1, le=1000)) -> dict:
     db = sesion()
     resultado = db.query(VentasModelo).filter(VentasModelo.id == id).first()
     if not resultado:
