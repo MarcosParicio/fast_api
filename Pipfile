@@ -17,4 +17,4 @@ python-dotenv = "*"
 python_version = "3.12"
 
 [scripts]
-start = "uvicorn main:app --reload"
+start = "uvicorn main:app --host 127.0.0.1 --port 8000 --reload"
