@@ -25,3 +25,5 @@ CMD ["pipenv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "800
 # verifico que el contenedor está corriendo: docker ps
 # accedo a mi aplicación FastAPI abriendo mi navegador y navegando a http://localhost:8000 y http://localhost:8000/docs o bien  http://127.0.0.1:8000 y  http://127.0.0.1:8000/docs
 
+# para detener el contenedor: docker stop container_id
+
