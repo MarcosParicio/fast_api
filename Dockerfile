@@ -1,60 +1,27 @@
-# Usa una imagen base oficial de Debian o similar
-FROM debian:bullseye-slim
+# Imagen base de Python
+FROM python:3.12
 
-# Instala las dependencias necesarias para construir Python desde el código fuente
-RUN apt-get update && apt-get install -y \
-    wget \
-    build-essential \
-    libssl-dev \
-    zlib1g-dev \
-    libncurses5-dev \
-    libncursesw5-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libgdbm-dev \
-    libdb5.3-dev \
-    libbz2-dev \
-    libexpat1-dev \
-    liblzma-dev \
-    tk-dev \
-    libffi-dev \
-    git \
-    && apt-get clean
-
-# Descarga y construye Python 3.12
-RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz \
-    && tar xzf Python-3.12.0.tgz \
-    && cd Python-3.12.0 \
-    && ./configure --enable-optimizations \
-    && make altinstall \
-    && cd .. \
-    && rm -rf Python-3.12.0 Python-3.12.0.tgz
-
-# Usa la nueva versión de Python
-RUN ln -s /usr/local/bin/python3.12 /usr/local/bin/python
-
-# Instala pip para Python 3.12
-RUN /usr/local/bin/python3.12 -m ensurepip \
-    && /usr/local/bin/python3.12 -m pip install --upgrade pip
-
-# Establece el directorio de trabajo dentro del contenedor
+# Establecer el directorio de trabajo en la imagen
 WORKDIR /app
 
-# Instala pipenv
-RUN /usr/local/bin/python3.12 -m pip install pipenv
+# Copiar el Pipfile y el Pipfile.lock al contenedor
+COPY Pipfile Pipfile.lock /app/
 
-# Copia los archivos Pipfile y Pipfile.lock a /app en el contenedor
-COPY Pipfile Pipfile.lock ./
+# Instalar pipenv y dependencias
+RUN pip install pipenv && pipenv install --system --deploy
 
-# Instala las dependencias del proyecto
-RUN pipenv install --deploy --ignore-pipfile
+# Copiar el resto del proyecto al contenedor
+COPY . /app
 
-# Copia el resto del código de la aplicación al contenedor
-COPY . .
+# Exponer el puerto 8000
+EXPOSE 8000
 
-# Especifica que el contenedor debe ejecutarse como un entorno virtual de pipenv
-CMD ["pipenv", "run", "start"]
+# Comando para ejecutar la aplicación FastAPI
+CMD ["pipenv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 
-# COMANDO PARA CREAR LA IMAGEN EN DOCKER DESKTOP: docker build -t nombre-de-tu-imagen .
+# se ejecuta para crear la imagen: docker build -t fastapi-ventas .
+# se ejecuta para para iniciar el contenedor y mapear el puerto 8000 del contenedor al puerto 8000 de mi máquina local: docker run -d -p 8000:8000 fastapi-ventas
+# verifico que el contenedor está corriendo: docker ps
+# accedo a mi aplicación FastAPI abriendo mi navegador y navegando a http://localhost:8000 y http://localhost:8000/docs o bien  http://127.0.0.1:8000 y  http://127.0.0.1:8000/docs
 
