@@ -54,3 +54,7 @@ COPY . .
 
 # Especifica que el contenedor debe ejecutarse como un entorno virtual de pipenv
 CMD ["pipenv", "run", "start"]
+
+
+# COMANDO PARA CREAR LA IMAGEN EN DOCKER DESKTOP: docker build -t nombre-de-tu-imagen .
+
