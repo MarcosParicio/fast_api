@@ -196,5 +196,5 @@ def login(usuario: Usuario):
         token: str = dame_token(usuario.model_dump()) # he puesto dict() pero me dice que está deprecado en FastAPI y que se debe usar model_dump()
         return JSONResponse(content=token, status_code=200)
     else:
-        return JSONResponse({'mensaje': 'Los credenciales no son correctos, acceso denegado'}, status_code=404)
+        return JSONResponse({'mensaje': 'Los credenciales no son correctos, acceso denegado'}, status_code=401)
     
